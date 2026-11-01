@@ -126,3 +126,10 @@ test('exporta e importa o rascunho', () => {
   expect(() => parseDraftFile('{"nada": 1}')).toThrow(/rascunho/)
   expect(() => parseDraftFile('não é json')).toThrow(/JSON/)
 })
+
+test('sair da página grava o rascunho na hora, sem esperar o debounce', () => {
+  useLibraryStore.getState().addSkill({ content: md('urgente') })
+  expect(localStorage.getItem(DRAFT_STORAGE_KEY) ?? '').not.toContain('urgente')
+  window.dispatchEvent(new Event('pagehide'))
+  expect(localStorage.getItem(DRAFT_STORAGE_KEY)).toContain('name: urgente')
+})

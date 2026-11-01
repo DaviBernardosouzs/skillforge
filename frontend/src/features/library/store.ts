@@ -7,6 +7,14 @@ import { EMPTY_DRAFT, type FileEntry, type LibraryDraft, type SkillEntry } from 
 export const DRAFT_STORAGE_KEY = 'skillforge:draft:v1'
 export const draftStorage = createSafeStorage()
 
+// O debounce não pode engolir as últimas alterações: grava na hora ao sair ou esconder a aba
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => draftStorage.flush())
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') draftStorage.flush()
+  })
+}
+
 export type NewSkill = Partial<Omit<SkillEntry, 'id' | 'files'>> & {
   content: string
   files?: Omit<FileEntry, 'id'>[]

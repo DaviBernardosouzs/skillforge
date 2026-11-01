@@ -8,6 +8,7 @@ import { PageFallback } from './ui/PageFallback'
 const ForgePage = lazy(() => import('./pages/ForgePage'))
 const BenchPage = lazy(() => import('./pages/BenchPage'))
 const MoldPage = lazy(() => import('./pages/MoldPage'))
+const MapPage = lazy(() => import('./pages/MapPage'))
 const DesignPage = lazy(() => import('./pages/DesignPage'))
 
 const queryClient = new QueryClient({
@@ -47,6 +48,14 @@ export function AppRoutes() {
           element={
             <Screen area="o Molde">
               <MoldPage />
+            </Screen>
+          }
+        />
+        <Route
+          path="mapa"
+          element={
+            <Screen area="o Mapa da liga">
+              <MapPage />
             </Screen>
           }
         />
