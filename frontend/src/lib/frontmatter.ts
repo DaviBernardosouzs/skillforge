@@ -13,6 +13,12 @@ export function readFrontmatterField(content: string, field: 'name' | 'descripti
   return match[1].trim().replace(/^(['"])(.*)\1$/, '$2')
 }
 
+/** O arquivo começa com um bloco --- fechado (o parser do backend consegue ler)? */
+export function hasFrontmatter(content: string): boolean {
+  const text = content.replace(/\r\n/g, '\n')
+  return text.startsWith('---\n') && /\n---[ \t]*(\n|$)/.test(text.slice(3))
+}
+
 /** Linha (1-based) em que o texto aparece pela primeira vez, para levar o cursor até ele. */
 export function findLine(content: string, needle: string): number | null {
   if (!needle) return null

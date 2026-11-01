@@ -6,6 +6,7 @@ import { Layout } from './ui/Layout'
 import { PageFallback } from './ui/PageFallback'
 
 const ForgePage = lazy(() => import('./pages/ForgePage'))
+const BenchPage = lazy(() => import('./pages/BenchPage'))
 const DesignPage = lazy(() => import('./pages/DesignPage'))
 
 const queryClient = new QueryClient({
@@ -29,6 +30,14 @@ export function AppRoutes() {
           element={
             <Screen area="A Forja">
               <ForgePage />
+            </Screen>
+          }
+        />
+        <Route
+          path="bancada"
+          element={
+            <Screen area="a Bancada">
+              <BenchPage />
             </Screen>
           }
         />

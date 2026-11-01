@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { afterEach, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, vi } from 'vitest'
+import { server } from './msw'
 
 // jsdom não implementa matchMedia (usado por prefers-reduced-motion) nem canvas.
 Object.defineProperty(window, 'matchMedia', {
@@ -24,6 +25,9 @@ globalThis.ResizeObserver ??= class {
   disconnect() {}
 }
 
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }))
 afterEach(() => {
   cleanup()
+  server.resetHandlers()
 })
+afterAll(() => server.close())

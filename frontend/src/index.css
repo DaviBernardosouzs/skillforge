@@ -147,14 +147,14 @@
     );
   }
 
-  /* Trinca: fissura diagonal desenhada sobre a peça com erro */
+  /* Trinca: fissura fina no canto da peça com erro, sem passar por cima do texto */
   .crack-line {
     background-image: linear-gradient(
-      115deg,
-      transparent 46%,
-      var(--color-slag-400) 46.5%,
-      var(--color-slag-400) 47.5%,
-      transparent 48%
+      118deg,
+      transparent 78%,
+      rgb(210 122 95 / 0.7) 78.4%,
+      rgb(210 122 95 / 0.7) 79.2%,
+      transparent 79.6%
     );
   }
 
