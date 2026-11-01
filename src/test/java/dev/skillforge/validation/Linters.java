@@ -12,6 +12,7 @@ import dev.skillforge.validation.rules.NameFormatRule;
 import dev.skillforge.validation.rules.NameRequiredRule;
 import dev.skillforge.validation.rules.NameUniqueRule;
 import dev.skillforge.validation.rules.ReferencesExistRule;
+import dev.skillforge.validation.rules.RelatedExistsRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public final class Linters {
                 new NameRequiredRule(), new NameFormatRule(), new NameUniqueRule(),
                 new DescriptionRequiredRule(), new DescriptionLengthRule(), new DescriptionTriggerRule(),
                 new ReferencesExistRule(new ReferenceExtractor()), new BodyNotEmptyRule(), new BodyLengthRule(),
-                new FilePathRule()));
+                new FilePathRule(), new RelatedExistsRule()));
     }
 
     public static SkillLinter defaultLinter() {

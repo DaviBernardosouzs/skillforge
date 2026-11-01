@@ -45,6 +45,24 @@ Se aparecer "permissão negada", dê permissão de execução uma vez:
 ```bash
 chmod +x scripts/validate.sh
 ```
+
+## Abrir no Obsidian
+
+Esta pasta também é um vault do [Obsidian](https://obsidian.md):
+
+1. No Obsidian, escolha **Open folder as vault** e selecione esta pasta.
+2. Abra o **Graph View**: o índice, as categorias, as skills, seus arquivos e as ligações entre
+   skills relacionadas aparecem coloridos por tipo (`.obsidian/graph.json`).
+3. Abra `biblioteca.canvas` para ver o mapa visual das categorias.
+
+A camada do Obsidian fica em `_graph/`, `_templates/`, `.obsidian/` e `biblioteca.canvas`.
+Os `SKILL.md` em `skills/` não usam sintaxe do Obsidian e continuam no formato padrão de Agent Skills.
+
+Para criar uma skill de dentro do vault, ative o plugin **Templates** em *Settings → Core plugins*
+(a pasta `_templates/` já está configurada) e insira o template **Nova skill**.
+
+Se as cores do grafo não aparecerem, crie em *Graph View → Groups* os grupos `tag:#index`,
+`tag:#category`, `tag:#skill`, `path:references` e `path:scripts`.
 {{#hasLicense}}
 
 ## Licença

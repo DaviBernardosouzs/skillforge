@@ -14,6 +14,6 @@ public final class SkillFactory {
                 new SkillName(raw.name()),
                 raw.description().strip(),
                 raw.extraFrontmatter());
-        return new Skill(metadata, raw.body(), raw.files());
+        return new Skill(metadata, raw.body(), raw.files(), raw.graph());
     }
 }

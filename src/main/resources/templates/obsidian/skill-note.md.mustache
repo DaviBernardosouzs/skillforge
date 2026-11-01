@@ -1,0 +1,43 @@
+---
+type: skill
+{{#category}}
+category: {{{categoryYaml}}}
+{{/category}}
+tags:
+{{#tags}}
+  - {{.}}
+{{/tags}}
+---
+
+# {{name}}
+
+> {{description}}
+
+- Arquivo da skill: [[skills/{{name}}/SKILL|SKILL.md]]
+{{#category}}
+- Categoria: [[_graph/categorias/{{categoryNote}}|{{category}}]]
+{{/category}}
+{{^category}}
+- Índice: [[_graph/00 - Índice|{{libraryName}}]]
+{{/category}}
+{{#hasFiles}}
+
+## Arquivos
+{{#files}}
+- [[{{link}}|{{label}}]]
+{{/files}}
+{{/hasFiles}}
+{{#hasRelated}}
+
+## Relacionadas
+{{#related}}
+- [[_graph/skills/{{.}}|{{.}}]]
+{{/related}}
+{{/hasRelated}}
+{{#hasMentions}}
+
+## Menciona
+{{#mentions}}
+- [[_graph/skills/{{.}}|{{.}}]]
+{{/mentions}}
+{{/hasMentions}}
