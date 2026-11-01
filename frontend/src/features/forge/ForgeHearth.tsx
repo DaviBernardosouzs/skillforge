@@ -6,6 +6,10 @@ import { SparkBurst, type SparkBurstHandle } from '../../ui/SparkBurst'
 interface ForgeHearthProps {
   /** Intervalo entre golpes, em ms. */
   beat?: number
+  /** A peça pronta: para de bater e esfria de brasa para aço temperado. */
+  cooled?: boolean
+  /** Peça em repouso sobre o bloco, sem golpes. */
+  idle?: boolean
   className?: string
 }
 
@@ -13,14 +17,14 @@ interface ForgeHearthProps {
  * A peça incandescente sobre o bloco de aço. Sem ilustração literal: só forma, calor e ritmo.
  * A cada golpe a peça comprime, clareia e solta faíscas. Com movimento reduzido fica estática.
  */
-export function ForgeHearth({ beat = 2200, className }: ForgeHearthProps) {
+export function ForgeHearth({ beat = 2200, cooled = false, idle = false, className }: ForgeHearthProps) {
   const reduced = useReducedMotion()
   const billet = useAnimationControls()
   const sparks = useRef<SparkBurstHandle>(null)
   const stage = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (reduced) return
+    if (reduced || cooled || idle) return
     const strike = () => {
       const rect = stage.current?.getBoundingClientRect()
       if (rect) sparks.current?.burst(rect.width * 0.5, rect.height * 0.555, 30)
@@ -37,12 +41,16 @@ export function ForgeHearth({ beat = 2200, className }: ForgeHearthProps) {
       clearTimeout(first)
       clearInterval(interval)
     }
-  }, [reduced, beat, billet])
+  }, [reduced, cooled, idle, beat, billet])
 
   return (
     <div ref={stage} aria-hidden="true" className={className ?? 'relative aspect-[4/5] w-full'}>
       {/* Luz da forja vindo de baixo */}
-      <div className="absolute inset-x-[-10%] bottom-[-5%] h-[70%] bg-[radial-gradient(ellipse_at_50%_100%,rgb(217_83_31/0.38),rgb(168_50_27/0.14)_40%,transparent_70%)]" />
+      <div
+        className={`absolute inset-0 transition-opacity duration-[1400ms] ${cooled ? 'opacity-25' : 'opacity-100'}`}
+      >
+        <div className="absolute inset-x-[-10%] bottom-[-5%] h-[70%] bg-[radial-gradient(ellipse_at_50%_100%,rgb(217_83_31/0.38),rgb(168_50_27/0.14)_40%,transparent_70%)]" />
+      </div>
 
       {/* Bloco de aço */}
       <div
@@ -70,10 +78,21 @@ export function ForgeHearth({ beat = 2200, className }: ForgeHearthProps) {
       >
         <div className="absolute inset-x-[12%] top-[38%] h-[2px] bg-heat-6/70" />
         <div className="absolute inset-x-[30%] top-[64%] h-px bg-heat-2/50" />
+        {/* Aço temperado por cima: esfria só com opacidade, sem animar cor */}
+        <div
+          className={`absolute inset-0 transition-opacity duration-[1400ms] ease-out ${cooled ? 'opacity-100' : 'opacity-0'}`}
+          style={{
+            background:
+              'linear-gradient(180deg, var(--color-steel-300) 0%, var(--color-steel-400) 45%, var(--color-steel-600) 100%)',
+            boxShadow: 'inset 0 2px 0 rgb(255 255 255 / 0.35), inset 0 -6px 12px rgb(19 16 14 / 0.5)',
+          }}
+        />
       </motion.div>
 
       {/* Ar quente acima da peça */}
-      <div className="absolute inset-x-[15%] top-[22%] h-[30%] bg-[radial-gradient(ellipse_at_50%_100%,rgb(245_196_106/0.16),transparent_65%)]" />
+      <div
+        className={`transition-opacity duration-[1400ms] ${cooled ? 'opacity-0' : 'opacity-100'} absolute inset-x-[15%] top-[22%] h-[30%] bg-[radial-gradient(ellipse_at_50%_100%,rgb(245_196_106/0.16),transparent_65%)]`}
+      />
 
       <SparkBurst ref={sparks} />
     </div>

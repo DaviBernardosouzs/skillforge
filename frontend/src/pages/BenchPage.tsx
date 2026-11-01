@@ -1,15 +1,15 @@
 import { Export } from '@phosphor-icons/react'
 import { useMemo, useRef, useState } from 'react'
-import { generateLibrary, saveBlob } from '../api/client'
 import type { Violation } from '../api/types'
 import { Anvil } from '../features/bench/Anvil'
 import { BenchFooter } from '../features/bench/BenchFooter'
 import { Stock } from '../features/bench/Stock'
 import { TemperPanel } from '../features/bench/TemperPanel'
 import type { EditorMark, SkillEditorHandle } from '../features/editor/SkillEditor'
+import { ForgeCeremony } from '../features/forge/ForgeCeremony'
 import { downloadDraft } from '../features/library/draftFile'
-import { toLibraryRequest } from '../features/library/request'
 import { useLibraryStore } from '../features/library/store'
+import type { LibraryDraft } from '../features/library/types'
 import { useLibraryLint, useSkillLint } from '../features/lint/useLint'
 import { locateViolation, violationsBySkill } from '../features/lint/violations'
 import { Button } from '../ui/Button'
@@ -26,14 +26,23 @@ export default function BenchPage() {
   const skill = draft.skills.find((s) => s.id === selectedId) ?? draft.skills[0]
   const editor = useRef<SkillEditorHandle>(null)
   const [zone, setZone] = useState<Zone>('anvil')
+  const [forgeOpen, setForgeOpen] = useState(false)
+  // 422 do /generate: vale até a próxima edição do rascunho
+  const [rejected, setRejected] = useState<{ draft: LibraryDraft; violations: Violation[] } | null>(null)
+  const cracked = rejected && rejected.draft === draft ? rejected.violations : null
 
   const skillLint = useSkillLint(skill)
   const libraryLint = useLibraryLint(draft)
 
-  const byskill = useMemo(
-    () => (libraryLint.data ? violationsBySkill(draft.skills, libraryLint.data.violations) : undefined),
-    [libraryLint.data, draft.skills],
-  )
+  const byskill = useMemo(() => {
+    if (!libraryLint.data && !cracked) return undefined
+    const all = [...(libraryLint.data?.violations ?? []), ...(cracked ?? [])]
+    const unique = all.filter(
+      (v, i) =>
+        all.findIndex((o) => o.ruleId === v.ruleId && o.skill === v.skill && o.message === v.message) === i,
+    )
+    return violationsBySkill(draft.skills, unique)
+  }, [libraryLint.data, cracked, draft.skills])
 
   const violations: Violation[] | undefined = useMemo(() => {
     if (!skill || !skillLint.data) return undefined
@@ -53,7 +62,8 @@ export default function BenchPage() {
     [skill, violations],
   )
 
-  const errors = libraryLint.data?.errorCount ?? 0
+  const crackedErrors = cracked?.filter((v) => v.severity === 'ERROR').length ?? 0
+  const errors = Math.max(libraryLint.data?.errorCount ?? 0, crackedErrors)
   const warnings = libraryLint.data?.warningCount ?? 0
   const blockReason =
     libraryLint.blocker ??
@@ -65,9 +75,10 @@ export default function BenchPage() {
           ? 'A têmpera da biblioteca falhou. Confira a conexão com a forja.'
           : null)
 
-  async function forge() {
-    const result = await generateLibrary(toLibraryRequest(draft))
-    saveBlob(result.blob, result.fileName)
+  function onCracked(violations: Violation[]) {
+    setForgeOpen(false)
+    setRejected({ draft, violations })
+    setZone('stock')
   }
 
   function locate(violation: Violation) {
@@ -91,6 +102,17 @@ export default function BenchPage() {
           Exportar rascunho (.json)
         </Button>
       </div>
+
+      {cracked && (
+        <div
+          role="alert"
+          className="crack-line mx-4 mb-3 border border-slag-400/60 bg-slag-900 px-4 py-3 text-sm text-slag-400 lg:mx-auto lg:w-[calc(100%-2rem)] lg:max-w-[1568px]"
+        >
+          A peça trincou na forja: {cracked.length}{' '}
+          {cracked.length === 1 ? 'violação marcada' : 'violações marcadas'} nas skills do estoque. Corrija e
+          forje de novo.
+        </div>
+      )}
 
       <Tabs
         label="Zonas da bancada"
@@ -124,8 +146,18 @@ export default function BenchPage() {
         inspected={Boolean(libraryLint.data) && !libraryLint.blocker}
         inspecting={libraryLint.isPending}
         blockReason={blockReason}
-        onForge={() => void forge()}
+        onForge={() => setForgeOpen(true)}
       />
+
+      {forgeOpen && (
+        <ForgeCeremony
+          open
+          draft={draft}
+          warnings={warnings}
+          onClose={() => setForgeOpen(false)}
+          onCracked={onCracked}
+        />
+      )}
     </div>
   )
 }

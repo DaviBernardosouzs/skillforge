@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { useImperativeHandle } from 'react'
@@ -88,4 +88,36 @@ test('nome de biblioteca inválido bloqueia sem chamar a API', async () => {
   renderBench()
   expect(await screen.findByText('O nome da biblioteca precisa estar em kebab-case.')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Forjar' })).toBeDisabled()
+})
+
+test('422 na forja trinca a peça: volta à bancada com a violação marcada e o Forjar bloqueado', async () => {
+  const violation = {
+    ruleId: 'body-not-empty',
+    severity: 'ERROR' as const,
+    skill: 'revisao',
+    message: 'O corpo do SKILL.md está vazio.',
+  }
+  server.use(
+    http.post('*/api/libraries/generate', () =>
+      HttpResponse.json(
+        { title: 'Biblioteca inválida', status: 422, violations: [violation] },
+        { status: 422 },
+      ),
+    ),
+  )
+  renderBench()
+  const forge = screen.getByRole('button', { name: 'Forjar' })
+  await waitFor(() => expect(forge).toBeEnabled(), { timeout: 3000 })
+  await userEvent.click(forge)
+  const dialog = await screen.findByRole('dialog')
+  await userEvent.click(within(dialog).getByRole('button', { name: 'Forjar' }))
+
+  expect(
+    await screen.findByText(/A peça trincou na forja: 1 violação marcada/, {}, { timeout: 3000 }),
+  ).toBeInTheDocument()
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Forjar' })).toBeDisabled()
+
+  useLibraryStore.getState().setMeta({ author: 'Ana Maria' })
+  await waitFor(() => expect(screen.queryByText(/A peça trincou/)).not.toBeInTheDocument())
 })
