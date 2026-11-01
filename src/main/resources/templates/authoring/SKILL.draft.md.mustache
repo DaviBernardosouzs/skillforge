@@ -1,0 +1,65 @@
+{{! Corpo do SKILL.md gerado pelo assistente. O frontmatter (name, description) é escrito à parte pelo SkillMarkdownWriter, para o YAML ficar sempre válido. Seções opcionais vazias somem por inteiro. }}
+# {{title}}
+
+{{purpose}}
+
+## Quando usar
+{{#triggers}}
+- {{.}}
+{{/triggers}}
+{{#hasAntiTriggers}}
+
+## Quando NÃO usar
+{{#antiTriggers}}
+- {{.}}
+{{/antiTriggers}}
+{{/hasAntiTriggers}}
+{{#hasInputs}}
+
+## Entradas
+{{#inputs}}
+- {{.}}
+{{/inputs}}
+{{/hasInputs}}
+
+## Processo
+{{#steps}}
+{{number}}. **{{title}}**{{#detail}} — {{detail}}{{/detail}}
+{{/steps}}
+{{#outputFormat}}
+
+## Formato da saída
+{{outputFormat}}
+{{/outputFormat}}
+{{#hasExamples}}
+
+## Exemplos
+{{#examples}}
+
+### Exemplo {{number}}
+**Entrada:** {{input}}
+
+**Saída esperada:** {{expectedOutput}}
+{{/examples}}
+{{/hasExamples}}
+{{#hasPitfalls}}
+
+## Armadilhas
+{{#pitfalls}}
+- {{.}}
+{{/pitfalls}}
+{{/hasPitfalls}}
+{{#hasQualityChecks}}
+
+## Verificação antes de entregar
+{{#qualityChecks}}
+- [ ] {{.}}
+{{/qualityChecks}}
+{{/hasQualityChecks}}
+{{#hasResources}}
+
+## Recursos
+{{#resources}}
+- [{{fileName}}]({{path}}){{#purpose}} — {{purpose}}{{/purpose}}
+{{/resources}}
+{{/hasResources}}
