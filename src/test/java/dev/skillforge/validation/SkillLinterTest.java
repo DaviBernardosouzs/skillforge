@@ -1,23 +1,11 @@
 package dev.skillforge.validation;
 
-import dev.skillforge.config.SkillLimits;
 import dev.skillforge.domain.LintReport;
 import dev.skillforge.domain.RawSkill;
 import dev.skillforge.domain.SkillFile;
 import dev.skillforge.domain.Violation;
 import dev.skillforge.parsing.FrontmatterSplitter;
-import dev.skillforge.parsing.ReferenceExtractor;
 import dev.skillforge.parsing.SkillParser;
-import dev.skillforge.validation.rules.BodyLengthRule;
-import dev.skillforge.validation.rules.BodyNotEmptyRule;
-import dev.skillforge.validation.rules.DescriptionLengthRule;
-import dev.skillforge.validation.rules.DescriptionRequiredRule;
-import dev.skillforge.validation.rules.DescriptionTriggerRule;
-import dev.skillforge.validation.rules.FilePathRule;
-import dev.skillforge.validation.rules.NameFormatRule;
-import dev.skillforge.validation.rules.NameRequiredRule;
-import dev.skillforge.validation.rules.NameUniqueRule;
-import dev.skillforge.validation.rules.ReferencesExistRule;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -30,11 +18,7 @@ class SkillLinterTest {
 
     private final SkillParser parser = new SkillParser(new FrontmatterSplitter());
 
-    private final SkillLinter linter = new SkillLinter(List.of(
-            new NameRequiredRule(), new NameFormatRule(), new NameUniqueRule(),
-            new DescriptionRequiredRule(), new DescriptionLengthRule(), new DescriptionTriggerRule(),
-            new ReferencesExistRule(new ReferenceExtractor()), new BodyNotEmptyRule(), new BodyLengthRule(),
-            new FilePathRule()), SkillLimits.defaults());
+    private final SkillLinter linter = Linters.defaultLinter();
 
     @Test
     void validSkillHasNoViolations() {

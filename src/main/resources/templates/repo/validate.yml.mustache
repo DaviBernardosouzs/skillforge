@@ -1,0 +1,14 @@
+# Gerado pelo SkillForge. Sem expressões do Actions (cifrão + chaves duplas), que conflitariam com o Mustache.
+name: Validar skills
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar SKILL.md
+        run: bash ./scripts/validate.sh

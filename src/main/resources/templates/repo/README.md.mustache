@@ -1,0 +1,53 @@
+# {{libraryName}}
+
+Biblioteca de Agent Skills de **{{author}}**.
+
+> Gerada com [SkillForge](https://github.com/DaviBernardosouzs/skillforge).
+
+## Skills
+
+| Skill | Descrição |
+| --- | --- |
+{{#skills}}
+| [{{name}}](skills/{{name}}/SKILL.md) | {{descriptionCell}} |
+{{/skills}}
+
+## Como instalar e usar
+
+Cada pasta em `skills/` é uma skill independente, com um `SKILL.md` e arquivos de apoio opcionais
+(`scripts/`, `references/`, `assets/`).
+
+- **Claude Code**: copie a pasta da skill para `~/.claude/skills/` (pessoal) ou para `.claude/skills/`
+  do seu projeto. O Claude passa a usar a skill quando o pedido combina com a `description`.
+- **claude.ai**: compacte a pasta da skill em `.zip` e envie em *Settings → Capabilities → Skills*.
+- **Claude API**: envie a pasta pela Skills API (`/v1/skills`) e referencie o `skill_id` no `container`.
+
+## Como adicionar uma skill
+
+1. Copie `templates/SKILL.template.md` para `skills/<nome-da-skill>/SKILL.md`.
+2. Preencha o frontmatter: `name` igual ao nome da pasta, em kebab-case, e uma `description`
+   que diga o que a skill faz **e quando usá-la**.
+3. Siga o guia em [docs/COMO-CRIAR-UMA-SKILL.md](docs/COMO-CRIAR-UMA-SKILL.md).
+4. Rode a validação antes do commit.
+
+## Validação
+
+```bash
+./scripts/validate.sh
+```
+
+O script confere o frontmatter de todos os `SKILL.md` (name em kebab-case e igual à pasta,
+description presente e com até {{descriptionMaxLength}} caracteres). O GitHub Actions roda a mesma
+validação em todo push e pull request (`.github/workflows/validate.yml`).
+
+Se aparecer "permissão negada", dê permissão de execução uma vez:
+
+```bash
+chmod +x scripts/validate.sh
+```
+{{#hasLicense}}
+
+## Licença
+
+{{licenseLabel}}. Veja [LICENSE](LICENSE).
+{{/hasLicense}}

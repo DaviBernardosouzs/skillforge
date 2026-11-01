@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Valida as skills desta biblioteca. Gerado pelo SkillForge.
+#
+# Para cada skills/*/SKILL.md confere: frontmatter presente, name presente e em kebab-case,
+# name igual ao nome da pasta, description presente e dentro do limite.
+# Só olha skills/: as pastas do Obsidian (_graph/, _templates/) ficam de fora.
+#
+# Uso: ./scripts/validate.sh   (se der "permissão negada": chmod +x scripts/validate.sh)
+set -euo pipefail
+
+NAME_MAX_LENGTH={{nameMaxLength}}
+DESCRIPTION_MAX_LENGTH={{descriptionMaxLength}}
+
+cd "$(dirname "$0")/.."
+
+# Lê o frontmatter da entrada padrão e imprime o valor de uma chave de primeiro nível.
+# Entende valores simples, entre aspas e blocos YAML (> ou |) em várias linhas.
+field() {
+  awk -v key="$1" -v sq="'" '
+    function clean(v) {
+      gsub(/^[ \t]+|[ \t]+$/, "", v)
+      if (length(v) >= 2 && (substr(v, 1, 1) == "\"" || substr(v, 1, 1) == sq) && substr(v, length(v), 1) == substr(v, 1, 1)) {
+        v = substr(v, 2, length(v) - 2)
+      }
+      return v
+    }
+    block && /^[ \t]/ { line = $0; gsub(/^[ \t]+/, "", line); value = value (value == "" ? "" : " ") line; next }
+    block { exit }
+    index($0, key ":") == 1 {
+      v = clean(substr($0, length(key) + 2))
+      if (v ~ /^[>|][-+]?$/) { block = 1; next }
+      print v
+      exit
+    }
+    END { if (block) print value }
+  '
+}
+
+errors=()
+checked=0
+shopt -s nullglob
+
+for file in skills/*/SKILL.md; do
+  checked=$((checked + 1))
+  folder=$(basename "$(dirname "$file")")
+
+  if [ "$(head -n 1 "$file" | tr -d '\r')" != "---" ]; then
+    errors+=("$file: o arquivo precisa começar com uma linha '---' (frontmatter YAML)")
+    continue
+  fi
+  if ! frontmatter=$(tr -d '\r' < "$file" | awk 'NR == 1 { next } /^---[ \t]*$/ { closed = 1; exit } { print } END { exit closed ? 0 : 1 }'); then
+    errors+=("$file: o bloco de frontmatter não foi fechado com '---'")
+    continue
+  fi
+
+  name=$(printf '%s\n' "$frontmatter" | field name)
+  description=$(printf '%s\n' "$frontmatter" | field description)
+
+  if [ -z "$name" ]; then
+    errors+=("$file: falta o campo 'name'")
+  else
+    if ! printf '%s\n' "$name" | grep -Eq '^[a-z0-9]+(-[a-z0-9]+)*$'; then
+      errors+=("$file: name '$name' precisa estar em kebab-case (ex.: minha-skill)")
+    fi
+    if [ "${#name}" -gt "$NAME_MAX_LENGTH" ]; then
+      errors+=("$file: name tem ${#name} caracteres; o máximo é $NAME_MAX_LENGTH")
+    fi
+    if [ "$name" != "$folder" ]; then
+      errors+=("$file: name '$name' deve ser igual ao nome da pasta '$folder'")
+    fi
+  fi
+
+  if [ -z "$description" ]; then
+    errors+=("$file: falta o campo 'description'")
+  elif [ "${#description}" -gt "$DESCRIPTION_MAX_LENGTH" ]; then
+    errors+=("$file: description tem ${#description} caracteres; o máximo é $DESCRIPTION_MAX_LENGTH")
+  fi
+done
+
+if [ "${#errors[@]}" -gt 0 ]; then
+  echo "✗ ${#errors[@]} problema(s) encontrado(s):"
+  for error in "${errors[@]}"; do
+    echo "  - $error"
+  done
+  exit 1
+fi
+
+echo "✓ $checked skill(s) válida(s)."

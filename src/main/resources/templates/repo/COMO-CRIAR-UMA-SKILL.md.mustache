@@ -1,0 +1,34 @@
+# Como criar uma skill
+
+Uma skill é uma pasta com um `SKILL.md` que ensina um agente a fazer uma tarefa específica.
+O agente sempre vê o `name` e a `description`; o corpo só é lido quando a skill é acionada, e os
+arquivos de apoio só quando o corpo manda.
+
+## Passo a passo
+
+1. Crie `skills/<nome-da-skill>/` e copie `templates/SKILL.template.md` para dentro como `SKILL.md`.
+   No Obsidian, use o template **Nova skill** (pasta `_templates/`).
+2. Escreva a `description` no formato **o que faz + quando usar**:
+   `Revisa PRs Java seguindo o checklist do time. Use quando o usuário pedir revisão de código ou colar um diff.`
+3. Preencha as seções do corpo e apague as que não fizerem sentido.
+4. Mova detalhes longos para `references/` e linke-os no corpo.
+5. Rode `./scripts/validate.sh`.
+
+## Limites do formato
+
+| Campo | Regra |
+| --- | --- |
+| `name` | kebab-case, até {{nameMaxLength}} caracteres, igual ao nome da pasta |
+| `description` | obrigatória, até {{descriptionMaxLength}} caracteres |
+| corpo | recomendado até {{bodyMaxLines}} linhas |
+
+## Checklist de qualidade
+
+- [ ] Pelo menos **2 situações** em "Quando usar".
+- [ ] Pelo menos **1 caso** em "Quando NÃO usar", para evitar acionamento errado.
+- [ ] Pelo menos **1 exemplo** de entrada e saída esperada.
+- [ ] Cada passo do processo explica o que fazer com **5 palavras ou mais** (nada de "revisar código").
+- [ ] **Formato da saída** descrito.
+- [ ] **Verificação antes de entregar** com itens objetivos.
+- [ ] A `description` coube no limite sem ser cortada.
+- [ ] O corpo tem até {{bodyMaxLines}} linhas; o resto foi para `references/`.
