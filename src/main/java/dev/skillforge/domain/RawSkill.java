@@ -22,6 +22,10 @@ public record RawSkill(String name, String description, String body,
         graph = graph == null ? SkillGraphInfo.empty() : graph;
     }
 
+    public RawSkill withName(String newName) {
+        return new RawSkill(newName, description, body, extraFrontmatter, files, graph);
+    }
+
     public RawSkill withGraph(SkillGraphInfo newGraph) {
         return new RawSkill(name, description, body, extraFrontmatter, files, newGraph);
     }
