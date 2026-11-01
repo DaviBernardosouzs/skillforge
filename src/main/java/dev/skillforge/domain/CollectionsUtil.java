@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /** Utilitários internos do domínio. */
-final class CollectionsUtil {
+final class     CollectionsUtil {
 
     private CollectionsUtil() {
     }
