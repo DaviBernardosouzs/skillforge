@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+
+/* Placeholder da Fase 1; o sistema de design completo entra na Fase 2. */
+@theme {
+  --color-coal-950: #14110f;
+  --color-iron-100: #ece6df;
+  --color-ember-500: #e2622b;
+}
+
+html,
+body,
+#root {
+  min-height: 100dvh;
+  background: var(--color-coal-950);
+  color: var(--color-iron-100);
+}
