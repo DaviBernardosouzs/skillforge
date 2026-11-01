@@ -28,7 +28,7 @@ import java.util.Set;
 @Component
 public class DefaultObsidianVaultWriter implements ObsidianVaultWriter {
 
-    static final String INDEX_NOTE = "_graph/00 - Índice.md";
+    static final String INDEX_NOTE = "_graph/00 - Indice.md";
     static final String CANVAS_FILE = "biblioteca.canvas";
     static final String NEW_SKILL_TEMPLATE = "_templates/Nova skill.md";
 

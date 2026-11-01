@@ -1,0 +1,12 @@
+target/
+node_modules/
+dist/
+frontend/
+.git/
+.idea/
+.vscode/
+*.log
+.env
+.claude/
+examples/
+docs/

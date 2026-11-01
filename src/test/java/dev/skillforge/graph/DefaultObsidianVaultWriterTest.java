@@ -54,7 +54,7 @@ class DefaultObsidianVaultWriterTest {
         assertThat(root.resolve(".obsidian/graph.json")).content().contains("tag:#skill", "colorGroups");
         assertThat(root.resolve(".obsidian/templates.json")).content().contains("\"_templates\"");
         assertThat(root.resolve("_templates/Nova skill.md")).content().contains("name: nome-da-skill", "## Processo");
-        assertThat(root.resolve("_graph/00 - Índice.md")).content()
+        assertThat(root.resolve("_graph/00 - Indice.md")).content()
                 .contains("type: index", "[[_graph/categorias/Dev Java|Dev: Java]]", "[[_graph/skills/docs|docs]]");
         assertThat(root.resolve("_graph/categorias/Dev Java.md")).content()
                 .contains("type: category", "[[_graph/skills/revisao|revisao]]", "[[_graph/skills/gerar-testes|gerar-testes]]");
@@ -74,7 +74,7 @@ class DefaultObsidianVaultWriterTest {
                 "## Relacionadas", "## Menciona", "[[_graph/skills/gerar-testes|gerar-testes]]");
         assertThat(root.resolve("_graph/skills/docs.md")).content()
                 .doesNotContain("category:", "## Arquivos", "## Relacionadas")
-                .contains("[[_graph/00 - Índice|minhas]]");
+                .contains("[[_graph/00 - Indice|minhas]]");
     }
 
     @Test

@@ -1,0 +1,58 @@
+{
+  "name": "minhas-skills",
+  "author": "Bernardo",
+  "license": "MIT",
+  "skills": [
+    {
+      "content": "---\nname: revisao-de-codigo\ndescription: Revisa pull requests Java seguindo o checklist do time. Use quando o usuário pedir revisão de código, colar um diff ou perguntar se um PR está pronto para merge.\n---\n\n# Revisão de código\n\nRevise a mudança como um colega sênior: aponte riscos reais antes de estilo.\n\n## Processo\n1. **Entenda a intenção** — leia a descrição do PR antes de opinar.\n2. **Percorra o checklist** — siga o [checklist](references/checklist.md) e anote arquivo e linha.\n3. **Cobre testes** — se faltar teste, sugira usar a skill gerar-testes.\n\n## Formato da saída\nComentários agrupados por prioridade: bloqueante, importante, sugestão.\n",
+      "files": [
+        {
+          "path": "references/checklist.md",
+          "content": "# Checklist\n\n- Nomes claros\n- Casos de erro tratados\n- Testes para o comportamento novo\n- Nenhum segredo no código\n",
+          "encoding": "utf8"
+        }
+      ],
+      "category": "desenvolvimento",
+      "tags": [
+        "java",
+        "review"
+      ],
+      "related": [
+        "gerar-testes"
+      ]
+    },
+    {
+      "content": "---\nname: gerar-testes\ndescription: Gera testes JUnit 5 com AssertJ para classes Java. Use quando o usuário pedir testes, cobertura ou casos de borda para um código existente.\n---\n\n# Gerar testes\n\n## Processo\n1. **Leia a classe** — identifique entradas, saídas e efeitos colaterais.\n2. **Liste os casos** — caminho feliz, entradas vazias, limites e erros.\n3. **Escreva os testes** — um comportamento por teste, nomes que descrevem o cenário.\n4. **Rode os testes** — use `scripts/run-tests.sh` e corrija o que falhar.\n\nVeja o [modelo de teste](references/modelo-de-teste.md).\n",
+      "files": [
+        {
+          "path": "references/modelo-de-teste.md",
+          "content": "# Modelo de teste\n\n```java\n@Test\nvoid descreveOCenario() {\n    // arrange, act, assert\n}\n```\n",
+          "encoding": "utf8"
+        },
+        {
+          "path": "scripts/run-tests.sh",
+          "content": "#!/usr/bin/env bash\n# Roda os testes do projeto Maven.\nset -euo pipefail\n./mvnw -q test\n",
+          "encoding": "utf8"
+        }
+      ],
+      "category": "desenvolvimento",
+      "tags": [
+        "java",
+        "testes"
+      ],
+      "related": [
+        "revisao-de-codigo"
+      ]
+    },
+    {
+      "content": "---\nname: registro-de-decisao\ndescription: Escreve um registro de decisão de arquitetura (ADR) com contexto, opções e consequências. Use quando o usuário precisar documentar uma decisão técnica ou comparar alternativas.\n---\n\n# Registro de decisão (ADR)\n\n## Formato da saída\nUse SEMPRE esta estrutura:\n\n```markdown\n# ADR-NNN: [Título]\n## Contexto\n## Decisão\n## Alternativas consideradas\n## Consequências\n```\n\nQuando a decisão afetar código já revisado, cite a skill revisao-de-codigo.\n",
+      "category": "documentacao",
+      "tags": [
+        "arquitetura"
+      ],
+      "related": [
+        "revisao-de-codigo"
+      ]
+    }
+  ]
+}

@@ -1,8 +1,13 @@
 package dev.skillforge.graph;
 
+import java.text.Normalizer;
 import java.util.regex.Pattern;
 
-/** Nomes de nota válidos no Obsidian e no Windows. */
+/**
+ * Nomes de nota válidos no Obsidian e no Windows. Os acentos saem do nome do arquivo (o texto
+ * exibido continua com acento): alguns unzip ignoram a marcação UTF-8 do zip e corrompem nomes
+ * não ASCII, o que deixaria o git de quem descompacta com o working tree sujo.
+ */
 public final class NoteNames {
 
     /** \ / : * ? " < > | e também # ^ [ ], que quebram wikilinks. */
@@ -12,7 +17,10 @@ public final class NoteNames {
     }
 
     public static String sanitize(String name) {
-        String cleaned = INVALID.matcher(name == null ? "" : name).replaceAll("")
+        String ascii = Normalizer.normalize(name == null ? "" : name, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .replaceAll("[^\\x20-\\x7E]", "");
+        String cleaned = INVALID.matcher(ascii).replaceAll("")
                 .replaceAll("\\p{Cntrl}", "")
                 .replaceAll("\\s+", " ")
                 .strip();

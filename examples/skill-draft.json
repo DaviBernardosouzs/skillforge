@@ -1,0 +1,55 @@
+{
+  "name": "resumo-de-reuniao",
+  "purpose": "Transforma anotações soltas de uma reunião em uma ata objetiva com decisões e próximos passos.",
+  "triggers": [
+    "o usuário colar anotações de uma reunião",
+    "o usuário pedir uma ata ou um resumo de reunião"
+  ],
+  "antiTriggers": [
+    "o usuário quiser a transcrição completa, palavra por palavra"
+  ],
+  "inputs": [
+    "Anotações ou transcrição da reunião",
+    "Lista de participantes, se houver"
+  ],
+  "steps": [
+    {
+      "title": "Separe os assuntos",
+      "detail": "Agrupe as anotações por tema antes de resumir qualquer coisa."
+    },
+    {
+      "title": "Extraia as decisões",
+      "detail": "Liste só o que foi decidido, com quem decidiu quando estiver claro."
+    },
+    {
+      "title": "Liste os próximos passos",
+      "detail": "Cada item com responsável e prazo, ou marque como pendente."
+    }
+  ],
+  "outputFormat": "Markdown com as seções Resumo, Decisões e Próximos passos, nesta ordem.",
+  "examples": [
+    {
+      "input": "reunião de planejamento: vamos lançar dia 10, Ana cuida do deploy",
+      "expectedOutput": "Decisões: lançamento dia 10. Próximos passos: Ana — deploy — até dia 10."
+    }
+  ],
+  "pitfalls": [
+    "Inventar responsáveis ou prazos que não aparecem nas anotações"
+  ],
+  "qualityChecks": [
+    "Toda decisão aparece nas anotações originais",
+    "Todo próximo passo tem responsável ou está marcado como pendente"
+  ],
+  "resources": [
+    {
+      "kind": "REFERENCE",
+      "fileName": "modelo-de-ata",
+      "purpose": "Modelo de ata com as três seções"
+    },
+    {
+      "kind": "SCRIPT",
+      "fileName": "exportar.sh",
+      "purpose": "Converte a ata em PDF com pandoc"
+    }
+  ]
+}

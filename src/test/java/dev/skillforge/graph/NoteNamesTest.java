@@ -15,7 +15,9 @@ class NoteNamesTest {
             "#tag ^bloco [x];tag bloco x",
             "fim.;fim",
             "???;sem-nome",
-            "Produtividade & Docs;Produtividade & Docs"
+            "Produtividade & Docs;Produtividade & Docs",
+            "Documentação técnica;Documentacao tecnica",
+            "日本;sem-nome"
     })
     void sanitizesNoteNames(String input, String expected) {
         assertThat(NoteNames.sanitize(input)).isEqualTo(expected);
