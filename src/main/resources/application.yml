@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: skillforge
+  mustache:
+    # Os .mustache em templates/ geram arquivos do repositório, não páginas web
+    check-template-location: false
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: SkillForge
+    description: Gerador de bibliotecas de Agent Skills
+
+skillforge:
+  limits:
+    # name e description conferidos em 2026-11-01 na documentação oficial
+    # (platform.claude.com/docs/en/agents-and-tools/agent-skills/overview):
+    # name até 64 caracteres, description até 1024.
+    name-max-length: 64
+    description-max-length: 1024
+    # Recomendação da skill oficial skill-creator: corpo do SKILL.md com menos de 500 linhas
+    body-max-lines: 500
+    max-skills-per-library: 50
+    max-file-bytes: 1048576        # 1 MB por arquivo
+    max-library-bytes: 10485760    # 10 MB no total
